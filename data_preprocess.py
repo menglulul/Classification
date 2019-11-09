@@ -10,6 +10,7 @@ import pandas as pd
 from sklearn import preprocessing
 from svm import svm
 from neural import neural
+from cross_vali import cross_validation
 
 def data_read(file_path):
     data_raw = pd.read_csv(file_path,sep=r'\t',header=None, engine='python')
@@ -39,5 +40,6 @@ if __name__ == "__main__":
     x2_sc = data_norm(x2)
 
     #svm
-    svm_pred, svm_pred_nonlinear = svm(x1_sc, y1)
+    cross_validation(x1_sc, y1, svm, 'linear')
+
     # neural_res = neural(data)

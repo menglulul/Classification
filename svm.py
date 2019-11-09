@@ -130,20 +130,20 @@ def predict(data, w, b):
     return class_result
 
 
-def svm(x, y):
+def svm(x, y, x_test, parameters):
     # change 0 in y -> -1
     y = np.where(y==0, -1, y)
 
     # fit with cvxopt function
     w, b, w_nonlinear, b_nonlinear = fit(x, y)
 
-    prediction = predict(x, w, b)
-    prediction_nonlinear = predict(x, w_nonlinear, b_nonlinear)
+    if parameters == 'linear':
+        prediction = predict(x_test, w, b)
+        prediction = np.where(prediction == -1, 0, prediction)
+        print(prediction)
+        return prediction
 
-    prediction = np.where(prediction==-1, 0, prediction)
+    prediction_nonlinear = predict(x_test, w_nonlinear, b_nonlinear)
     prediction_nonlinear = np.where(prediction_nonlinear==-1, 0, prediction_nonlinear)
-
-    print(prediction)
     print(prediction_nonlinear)
-
-    return prediction, prediction_nonlinear
+    return prediction_nonlinear
