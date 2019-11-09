@@ -10,7 +10,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 def data_read(file_path):
-    data_raw = pd.read_csv(file_path,sep=r'\t',header=None)
+    data_raw = pd.read_csv(file_path,sep=r'\t',header=None, engine='python')
     x_raw =  data_raw.iloc[:,:-1]
     y = data_raw.iloc[:,-1]
     # to do one-hot encoding for string column
