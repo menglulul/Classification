@@ -139,6 +139,10 @@ def svm(x, y):
 
     prediction = predict(x, w, b)
     prediction_nonlinear = predict(x, w_nonlinear, b_nonlinear)
+
+    prediction = np.where(prediction==-1, 0, prediction)
+    prediction_nonlinear = np.where(prediction_nonlinear==-1, 0, prediction_nonlinear)
+
     print(prediction)
     print(prediction_nonlinear)
 

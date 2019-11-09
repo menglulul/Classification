@@ -39,5 +39,5 @@ if __name__ == "__main__":
     x2_sc = data_norm(x2)
 
     #svm
-    svm_pred, svm_pred_nonlinear = svm(x2_sc, y2)
+    svm_pred, svm_pred_nonlinear = svm(x1_sc, y1)
     # neural_res = neural(data)
