@@ -36,5 +36,16 @@ def cal_distance(x, y):
 if __name__ == "__main__":
         # read data
     x1,y1 = data_preprocess.data_read("project3_dataset1.txt")
-    x1 = data_preprocess.data_norm(x1)
-    cross_vali.cross_validation(x1, y1, knn_classify, 1)
+    x1_sc = data_preprocess.data_norm(x1)
+
+    x2,y2 = data_preprocess.data_read("project3_dataset2.txt")
+    x2_sc = data_preprocess.data_norm(x2)
+    
+    for k in range(1,5):
+        print("k=",k)
+        print("dataset1")
+        cross_vali.cross_validation(x1, y1, knn_classify, k)
+        cross_vali.cross_validation(x1_sc, y1, knn_classify, k)
+        print("dataset2")
+        cross_vali.cross_validation(x2, y2, knn_classify, k)
+        cross_vali.cross_validation(x2_sc, y2, knn_classify, k)

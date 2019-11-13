@@ -8,8 +8,10 @@ Created on Thu Nov  9 15:21:42 2019
 import numpy as np
 from cvxopt import matrix as cvxopt_matrix
 from cvxopt import solvers as cvxopt_solvers
+import cross_vali
+import data_preprocess
 
-def fit(data, y):
+def fit(data, y, C):
 
     # method without using cvxopt
 
@@ -75,7 +77,6 @@ def fit(data, y):
     # method with cvxopt
 
     # C for additional constraints with non-linearly separable data
-    C = 10
     m, n = data.shape
     y = y.reshape(-1, 1) * 1.
     x_dash = y * data
@@ -83,6 +84,7 @@ def fit(data, y):
 
     P = cvxopt_matrix(H)
     q = cvxopt_matrix(-np.ones((m, 1)))
+
     G = cvxopt_matrix(-np.eye(m))
     h = cvxopt_matrix(np.zeros(m))
     A = cvxopt_matrix(y.reshape(1, -1))
@@ -92,9 +94,6 @@ def fit(data, y):
     h_nonlinear = cvxopt_matrix(np.hstack((np.zeros(m), np.ones(m) * C)))
 
     cvxopt_solvers.options['show_progress'] = False
-    cvxopt_solvers.options['abstol'] = 1e-10
-    cvxopt_solvers.options['reltol'] = 1e-10
-    cvxopt_solvers.options['feastol'] = 1e-10
 
     sol = cvxopt_solvers.qp(P, q, G, h, A, b)
     alphas = np.array(sol['x'])
@@ -130,14 +129,14 @@ def predict(data, w, b):
     return class_result
 
 
-def svm(x, y, x_test, parameters):
+def svm_classify(x, y, x_test, parameters):
     # change 0 in y -> -1
     y = np.where(y==0, -1, y)
 
     # fit with cvxopt function
-    w, b, w_nonlinear, b_nonlinear = fit(x, y)
+    w, b, w_nonlinear, b_nonlinear = fit(x, y, parameters['C'])
 
-    if parameters == 'linear':
+    if parameters['type'] == 'linear-separable':
         prediction = predict(x_test, w, b)
         prediction = np.where(prediction == -1, 0, prediction)
         print(prediction)
@@ -147,3 +146,16 @@ def svm(x, y, x_test, parameters):
     prediction_nonlinear = np.where(prediction_nonlinear==-1, 0, prediction_nonlinear)
     print(prediction_nonlinear)
     return prediction_nonlinear
+
+if __name__ == "__main__":
+    x1, y1 = data_preprocess.data_read("project3_dataset1.txt")
+    x1_sc = data_preprocess.data_norm(x1)
+
+    x2, y2 = data_preprocess.data_read("project3_dataset2.txt")
+    x2_sc = data_preprocess.data_norm(x2)
+    #svm
+    #for parameter 'type': try 'linearly-separable' or ''
+    #if 'type' not 'linearly-separable', parameter 'C' needs to be set to a numeric value for
+    # additional constraints on the optimization problem
+    cross_vali.cross_validation(x1_sc, y1, svm_classify, {'type': 'lineraly-separable', 'C': 9})
+
