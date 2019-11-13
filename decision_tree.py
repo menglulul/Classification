@@ -58,11 +58,11 @@ def choose_split(data, possible_splits):
         best_value = val
   return best_column, best_value
 
-def create_tree(data):
+def create_tree(data, depth, max_depth):
   
   # If all items in the dataset have the same classification, return the classification.
   n_labels, classification = classify_data(data)
-  if (n_labels == 1):
+  if n_labels == 1 or depth == max_depth:
     return classification
 
   # recursively generate subtrees
@@ -73,8 +73,8 @@ def create_tree(data):
     tree = {}
     tree[question] = []
     data_left, data_right = split_data(data, best_col, best_val)
-    tree_left = create_tree(data_left)
-    tree_right = create_tree(data_right)
+    tree_left = create_tree(data_left, depth + 1, max_depth)
+    tree_right = create_tree(data_right, depth + 1, max_depth)
     tree[question].append(tree_left)
     tree[question].append(tree_right)
     return tree
@@ -91,12 +91,12 @@ def predict(row, tree):
   else:
     return predict(row, subtree)
   
-def classify_dt(x, y, test, parameter):
+def classify_dt(x, y, test, max_depth=4):
   train = np.concatenate((np.array(x),np.array([y]).T), axis=1)
   train = pd.DataFrame(train)
   test = pd.DataFrame(test)
   test['label'] = 0 # here I fill the label column with dummmy values to make its dimension the same as the training set
-  dt = create_tree(train)
+  dt = create_tree(train, 0, max_depth)
   # print("decision tree: ", dt)
   # print(test.apply(lambda x: predict(x, dt), axis=1))
   return test.apply(lambda x: predict(x, dt), axis=1)
@@ -104,5 +104,5 @@ def classify_dt(x, y, test, parameter):
   # todo: max_depth - regularization
 
 if __name__ == "__main__":
-  x, y = dp.data_read("project3_dataset1.txt")  
-  cross_vali.cross_validation(x, y, classify_dt, None)
+  x, y = dp.data_read("project3_dataset2.txt")  
+  cross_vali.cross_validation(x, y, classify_dt, 5)
