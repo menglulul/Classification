@@ -10,13 +10,13 @@ import cross_vali
 import data_preprocess
 import math
 
-#return mean(2*k length array), standard deviation(2*k length array)
-def cal_mean_sd(x_train, y_train):
+#return mean(2*k length array), variance(2*k length array)
+def cal_mean_var(x_train, y_train):
     k = len(x_train[0])
     n = len(x_train)
     
     mean = np.zeros((2,k))
-    sd = np.zeros((2,k))
+    var = np.zeros((2,k))
     cnt0 = 0
     cnt1 = 0
     
@@ -33,13 +33,13 @@ def cal_mean_sd(x_train, y_train):
     for i in range(n):
         if y_train[i] == 0:
             for j in range(k):
-                sd[0][j] += (x_train[i][j]-mean[0][j])**2
+                var[0][j] += (x_train[i][j]-mean[0][j])**2
         else:
             for j in range(k):
-                sd[1][j] += (x_train[i][j]-mean[1][j])**2
-    sd[0] /= cnt0
-    sd[1] /= cnt1
-    return mean, sd
+                var[1][j] += (x_train[i][j]-mean[1][j])**2
+    var[0] /= cnt0
+    var[1] /= cnt1
+    return mean, var
 
 
 #return 2*1 array
@@ -49,16 +49,16 @@ def cal_pre_probability(y_train):
     pre_prob[1] = np.sum(y_train)/len(y_train)
     return pre_prob
 
-def cal_cond_prob(x, mean, sd):
-	exponent = math.exp(-((x-mean)**2 / (2 * sd )))
-	return (1 / (math.sqrt(2 * math.pi) * sd)) * exponent
+def cal_cond_prob(x, mean, var):
+	exponent = math.exp(-((x-mean)**2 / (2 * var )))
+	return (1 / (math.sqrt(2 * math.pi) * var)) * exponent
 
-def cal_probability(x, mean, sd, preprob):
+def cal_probability(x, mean, var, preprob):
     prob = np.ones(2)
     k = len(x)
     for i in range(k):
         for j in range(2):
-            prob[j] *= cal_cond_prob(x[i],mean[j][i],sd[j][i])
+            prob[j] *= cal_cond_prob(x[i],mean[j][i],var[j][i])
     for j in range(2):
         prob[j] *= preprob[j]
         
@@ -67,11 +67,11 @@ def cal_probability(x, mean, sd, preprob):
 
 
 def nb_classify(x_train, y_train, x_test, para=None):
-    mean, sd = cal_mean_sd(x_train, y_train)
+    mean, var = cal_mean_var(x_train, y_train)
     preprob = cal_pre_probability(y_train)
     y_predict = []
     for test_point in x_test:
-        prob = cal_probability(test_point, mean, sd, preprob)
+        prob = cal_probability(test_point, mean, var, preprob)
         y_predict.append(prob.argmax())
     return y_predict
     
