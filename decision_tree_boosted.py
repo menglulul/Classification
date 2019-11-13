@@ -22,7 +22,7 @@ def classify_boosting(train, test, n_rounds):
     # for each round, sample the training set with replacement according to weight
     bootstrap_train_x, bootstrap_train_y, bootstrap_weight = sample(train, weight)
     # generate decision tree
-    dt = decision_tree.create_tree(bootstrap_train_x)
+    dt = decision_tree.create_tree(bootstrap_train_x, 0, 3)
     # apply decision tree on training dataset
     result_train = train.apply(lambda r: decision_tree.predict(r, dt), axis=1)
     # apply decision tree on testing dataset    
@@ -61,5 +61,5 @@ def boosting(x, y, test, n_rounds):
 
   
 if __name__ == "__main__":
-  x, y = dp.data_read("project3_dataset2.txt")
+  x, y = dp.data_read("project3_dataset1.txt")
   cross_vali.cross_validation(x, y, boosting, 2)
