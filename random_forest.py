@@ -110,8 +110,8 @@ def classify_dt(x, y, test, n_features):
   # todo: max_depth - regularization
 
 def random_forest(x, y, test, parameter):
-  n_trees = 5
-  n_features = round(x.shape[1] / 2)
+  n_trees, ratio = parameter
+  n_features = round(x.shape[1] * ratio)
   prediction = pd.DataFrame()
   for i in range(n_trees):
     # sample with replacement for each tree
@@ -121,5 +121,5 @@ def random_forest(x, y, test, parameter):
   return prediction.max(axis=1)
   
 if __name__ == "__main__":
-  x, y = dp.data_read("project3_dataset2.txt")
-  cross_vali.cross_validation(x, y, random_forest, None)
+  x, y = dp.data_read("project3_dataset1.txt")
+  cross_vali.cross_validation(x, y, random_forest, (5, 0.5))
