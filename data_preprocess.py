@@ -8,9 +8,6 @@ Created on Thu Nov  7 13:29:42 2019
 
 import pandas as pd
 from sklearn import preprocessing
-from svm import svm
-from neural import neural
-from cross_vali import cross_validation
 
 def data_read(file_path):
     data_raw = pd.read_csv(file_path,sep=r'\t',header=None, engine='python')
@@ -39,7 +36,6 @@ if __name__ == "__main__":
     x2,y2 = data_read("project2_dataset2.txt")
     x2_sc = data_norm(x2)
 
-    #svm
-    cross_validation(x1_sc, y1, svm, 'linear')
 
-    # neural_res = neural(data)
+
+
