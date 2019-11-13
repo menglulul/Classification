@@ -101,10 +101,10 @@ def fit(data, y, C):
     sol_nonlinear = cvxopt_solvers.qp(P, q, G_nonlinear, h_nonlinear, A, b)
     alphas_nonlinear = np.array(sol_nonlinear['x'])
 
-    # w parameter in vectorized form
+    # w, b based on the hints given on piazza
     w = ((y * alphas).T @ data).reshape(-1, 1)
-    S = (alphas > 1e-4).flatten()
-    b = y[S] - np.dot(data[S], w)
+    Support_vector = (alphas > 1e-4).flatten()
+    b = y[Support_vector] - np.dot(data[Support_vector], w)
 
     w_nonlinear = ((y * alphas_nonlinear).T @ data).reshape(-1, 1)
     S_nonlinear = (alphas_nonlinear > 1e-4).flatten()
@@ -148,10 +148,10 @@ def svm_classify(x, y, x_test, parameters):
     return prediction_nonlinear
 
 if __name__ == "__main__":
-    x1, y1 = data_preprocess.data_read("project3_dataset1.txt")
+    x1, y1 = data_preprocess.data_read("project2_dataset1.txt")
     x1_sc = data_preprocess.data_norm(x1)
 
-    x2, y2 = data_preprocess.data_read("project3_dataset2.txt")
+    x2, y2 = data_preprocess.data_read("project2_dataset2.txt")
     x2_sc = data_preprocess.data_norm(x2)
     #svm
     #for parameter 'type': try 'linearly-separable' or ''
