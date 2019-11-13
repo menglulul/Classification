@@ -78,10 +78,10 @@ def nb_classify(x_train, y_train, x_test, para=None):
 
 if __name__ == "__main__":
         # read data
-    x1,y1 = data_preprocess.data_read("project3_dataset1.txt")
+    x1,y1 = data_preprocess.data_read("project2_dataset1.txt")
     x1 = data_preprocess.data_norm(x1)
     cross_vali.cross_validation(x1, y1, nb_classify, 0)
     
-    x2,y2 = data_preprocess.data_read("project3_dataset2.txt")
+    x2,y2 = data_preprocess.data_read("project2_dataset2.txt")
     x2 = data_preprocess.data_norm(x2)
     cross_vali.cross_validation(x2, y2, nb_classify, 0)
